@@ -99,10 +99,10 @@ func (w *QQBotTokenSource) Token() (*oauth2.Token, error) {
 		}
 	}
 	// 获取新的access rawToken
-	newToken, err, shard := w.sg.Do("retrieve access rawToken", func() (interface{}, error) {
+	newToken, err, _ := w.sg.Do("retrieve access rawToken", func() (interface{}, error) {
 		return w.getNewToken()
 	})
-	log.Debugf("shared flight:%v", shard)
+	//log.Debugf("shared flight:%v", shard)
 	if err != nil {
 		return nil, err
 	}
@@ -120,7 +120,7 @@ func (w *QQBotTokenSource) getNewToken() (*oauth2.Token, error) {
 		return nil, err
 	}
 	payload := bytes.NewReader(data)
-	log.Debugf("retrieve access token URL:%v req:%v", getTokenURL(), string(data))
+	//log.Debugf("retrieve access token URL:%v req:%v", getTokenURL(), string(data))
 	req, err := http.NewRequest(http.MethodPost, getTokenURL(), payload)
 	if err != nil {
 		log.Errorf("init http req failed:%v", err)
@@ -144,7 +144,7 @@ func (w *QQBotTokenSource) getNewToken() (*oauth2.Token, error) {
 		log.Errorf("read rsp failed:%v", err)
 		return nil, err
 	}
-	log.Debugf("access token:%v traceID:%v", string(body), rspTraceID)
+	//log.Debugf("access token:%v traceID:%v", string(body), rspTraceID)
 	retrieveRsp := &qqBotTokenRsp{}
 	if err = json.Unmarshal(body, retrieveRsp); err != nil {
 		log.Errorf("unmarshal rsp failed:%v traceID:%v", err, rspTraceID)
@@ -177,7 +177,7 @@ func StartRefreshAccessToken(ctx context.Context, tokenSource oauth2.TokenSource
 	if err != nil {
 		return err
 	}
-	log.Debugf("token:%+v ", tk)
+	//log.Debugf("token:%+v ", tk)
 	go func() {
 		var consecutiveFailures int
 		for {
@@ -193,7 +193,7 @@ func StartRefreshAccessToken(ctx context.Context, tokenSource oauth2.TokenSource
 				consecutiveFailures = 0
 				refreshMilliSec = getRefreshMilliSec(tk.ExpiresIn)
 			}
-			log.Debugf("refresh after %d milli sec", refreshMilliSec)
+			//log.Debugf("refresh after %d milli sec", refreshMilliSec)
 			timer := time.NewTimer(time.Duration(refreshMilliSec) * time.Millisecond)
 			select {
 			case <-timer.C:
@@ -231,7 +231,7 @@ func getRefreshMilliSec(tokenTTLSec int64) int64 {
 	// 随机化，避免所有机器人都同时获取access_token
 	if refreshMilliSec > randTimeUpperLimitMilliSec {
 		rand := r.Int63n(randTimeUpperLimitMilliSec)
-		log.Debugf("rand:%d", rand)
+		//log.Debugf("rand:%d", rand)
 		refreshMilliSec -= rand
 	}
 	return refreshMilliSec

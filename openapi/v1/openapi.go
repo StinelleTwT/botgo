@@ -102,7 +102,7 @@ func (o *openAPI) setupClient(appID string) {
 					return err
 				}
 				c.SetAuthScheme(tk.TokenType)
-				log.Debugf("token type:%s", tk.TokenType)
+				//log.Debugf("token type:%s", tk.TokenType)
 				c.SetAuthToken(tk.AccessToken)
 				return nil
 			},
@@ -110,7 +110,7 @@ func (o *openAPI) setupClient(appID string) {
 		// 设置请求之后的钩子，打印日志，判断状态码
 		OnAfterResponse(
 			func(_ *resty.Client, resp *resty.Response) error {
-				log.Infof("%v", respInfo(resp))
+				//log.Infof("%v", respInfo(resp))
 				// 执行请求后过滤器
 				if err := openapi.DoRespFilterChains(resp.Request.RawRequest, resp.RawResponse); err != nil {
 					return err
