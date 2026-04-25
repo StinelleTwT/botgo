@@ -43,6 +43,8 @@ const (
 	EventSubscribeMsgStatus    EventType = "SUBSCRIBE_MESSAGE_STATUS"
 	EventC2CFriendAdd          EventType = "FRIEND_ADD"
 	EventC2CFriendDel          EventType = "FRIEND_DEL"
+	EventGroupAddRobot         EventType = "GROUP_ADD_ROBOT"
+	EventGroupDelRobot         EventType = "GROUP_DEL_ROBOT"
 	EventEnterAIO              EventType = "ENTER_AIO"
 )
 
@@ -55,7 +57,7 @@ var intentEventMap = map[Intent][]EventType{
 	IntentGuildMembers:  {EventGuildMemberAdd, EventGuildMemberUpdate, EventGuildMemberRemove},
 	IntentGuildMessages: {EventMessageCreate, EventMessageDelete},
 	IntentGroupMessages: {EventGroupAtMessageCreate, EventC2CMessageCreate, EventSubscribeMsgStatus,
-		EventC2CFriendAdd, EventC2CFriendDel},
+		EventC2CFriendAdd, EventC2CFriendDel, EventGroupAddRobot, EventGroupDelRobot},
 
 	IntentGuildMessageReactions: {EventMessageReactionAdd, EventMessageReactionRemove},
 	IntentGuildAtMessage:        {EventAtMessageCreate, EventPublicMessageDelete},

@@ -61,6 +61,8 @@ var eventParseFuncMap = map[dto.OPCode]map[dto.EventType]eventParseFunc{
 		dto.EventC2CFriendAdd:         c2cFriendAddHandler,
 		dto.EventC2CFriendDel:         c2cFriendDelHandler,
 		dto.EventEnterAIO:             enterAIOHandler,
+		dto.EventGroupAddRobot:        groupAddRobotHandler,
+		dto.EventGroupDelRobot:        groupDelRobotHandler,
 	},
 }
 
@@ -351,6 +353,28 @@ func enterAIOHandler(payload *dto.WSPayload, message []byte) error {
 	}
 	if DefaultHandlers.EnterAIO != nil {
 		return DefaultHandlers.EnterAIO(payload, data)
+	}
+	return nil
+}
+
+func groupAddRobotHandler(payload *dto.WSPayload, message []byte) error {
+	data := &dto.WSGroupAddOrDelRobotData{}
+	if err := ParseData(message, data); err != nil {
+		return err
+	}
+	if DefaultHandlers.GroupAddOrDelRobot != nil {
+		return DefaultHandlers.GroupAddOrDelRobot(payload, data)
+	}
+	return nil
+}
+
+func groupDelRobotHandler(payload *dto.WSPayload, message []byte) error {
+	data := &dto.WSGroupAddOrDelRobotData{}
+	if err := ParseData(message, data); err != nil {
+		return err
+	}
+	if DefaultHandlers.GroupAddOrDelRobot != nil {
+		return DefaultHandlers.GroupAddOrDelRobot(payload, data)
 	}
 	return nil
 }

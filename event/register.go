@@ -37,7 +37,8 @@ var DefaultHandlers struct {
 	SubscribeMsgStatus SubscribeMsgStatusEventHandler
 	C2CFriend          C2CFriendEventHandler
 
-	EnterAIO EnterAIOEventHandler
+	EnterAIO           EnterAIOEventHandler
+	GroupAddOrDelRobot GroupAddOrDelRobotEventHandler
 }
 
 // ReadyHandler 可以处理 ws 的 ready 事件
@@ -122,6 +123,8 @@ type SubscribeMsgStatusEventHandler func(event *dto.WSPayload, data *dto.WSSubsc
 // EnterAIOEventHandler 进入AIO事件 handler
 type EnterAIOEventHandler func(event *dto.WSPayload, data *dto.WSEnterAIOData) error
 
+type GroupAddOrDelRobotEventHandler func(event *dto.WSPayload, data *dto.WSGroupAddOrDelRobotData) error
+
 // RegisterHandlers 注册事件回调，并返回 intent 用于 websocket 的鉴权
 func RegisterHandlers(handlers ...interface{}) dto.Intent {
 	var i dto.Intent
@@ -147,10 +150,13 @@ func RegisterHandlers(handlers ...interface{}) dto.Intent {
 			i = i | dto.EventToIntent(dto.EventSubscribeMsgStatus)
 		case C2CFriendEventHandler:
 			DefaultHandlers.C2CFriend = handle
-			i = i | dto.EventToIntent(dto.EventC2CFriendAdd)
+			i = i | dto.EventToIntent(dto.EventC2CFriendAdd, dto.EventC2CFriendDel)
 		case EnterAIOEventHandler:
 			DefaultHandlers.EnterAIO = handle
 			i = i | dto.EventToIntent(dto.EventEnterAIO)
+		case GroupAddOrDelRobotEventHandler:
+			DefaultHandlers.GroupAddOrDelRobot = handle
+			i = i | dto.EventToIntent(dto.EventGroupAddRobot, dto.EventGroupDelRobot)
 		default:
 		}
 	}
