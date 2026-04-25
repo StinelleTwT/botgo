@@ -10,7 +10,8 @@ type Message struct {
 	GuildID string `json:"guild_id"`
 	// 群ID
 	GroupID string `json:"group_id"`
-
+	// 群OpenID
+	GroupOpenID string `json:"group_openid"`
 	// 内容
 	Content string `json:"content"`
 	// 发送时间
@@ -45,6 +46,15 @@ type Message struct {
 	TTL uint `json:"ttl,omitempty"`
 	// 消息场景描述
 	MessageScene MessageScene `json:"message_scene,omitempty"`
+	// 消息类型
+	MessageType int          `json:"message_type"`
+	MsgElements []MsgElement `json:"msg_elements"`
+}
+
+type MsgElement struct {
+	Attachments []*MessageAttachment `json:"attachments"`
+	Content     string               `json:"content"`
+	MsgIdx      string               `json:"msg_idx"`
 }
 
 // Embed 结构
@@ -86,6 +96,7 @@ type MessageReactionUsers struct {
 
 // MessageScene 消息场景
 type MessageScene struct {
-	Source       string `json:"source,omitempty"`        // 消息来源, realtime_voice: 实时通话场景, ai_search: AI搜索 其它默认为AIO消息
-	CallbackData string `json:"callback_data,omitempty"` // 回调数据
+	Source       string   `json:"source,omitempty"`        // 消息来源, realtime_voice: 实时通话场景, ai_search: AI搜索 其它默认为AIO消息
+	CallbackData string   `json:"callback_data,omitempty"` // 回调数据
+	Ext          []string `json:"ext"`                     // 额外数据
 }
