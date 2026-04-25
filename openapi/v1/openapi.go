@@ -15,6 +15,7 @@ import (
 	"github.com/tencent-connect/botgo/log"
 	"github.com/tencent-connect/botgo/openapi"
 	"github.com/tencent-connect/botgo/version"
+	"github.com/tencent-connect/botgo/websocket/client"
 	"golang.org/x/oauth2"
 )
 
@@ -66,6 +67,12 @@ func (o *openAPI) WithTimeout(duration time.Duration) openapi.OpenAPI {
 	return o
 }
 
+// IsNeedPrintInfo 设置是否需要打印client的日志
+func (o *openAPI) IsNeedPrintInfo(t bool) openapi.OpenAPI {
+	client.NeedPrintInfo = t
+	return o
+}
+
 // SetDebug 设置调试模式, 输出更多过程日志
 func (o *openAPI) SetDebug(debug bool) openapi.OpenAPI {
 	o.restyClient.Debug = debug
@@ -110,7 +117,9 @@ func (o *openAPI) setupClient(appID string) {
 		// 设置请求之后的钩子，打印日志，判断状态码
 		OnAfterResponse(
 			func(_ *resty.Client, resp *resty.Response) error {
-				//log.Infof("%v", respInfo(resp))
+				if client.NeedPrintInfo {
+					log.Infof("%v", respInfo(resp))
+				}
 				// 执行请求后过滤器
 				if err := openapi.DoRespFilterChains(resp.Request.RawRequest, resp.RawResponse); err != nil {
 					return err

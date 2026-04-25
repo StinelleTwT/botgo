@@ -51,6 +51,9 @@ type Base interface {
 
 	// TraceID 返回上一次请求的 trace id
 	TraceID() string
+
+	// IsNeedPrintInfo 设置是否需要打印client的日志
+	IsNeedPrintInfo(t bool) OpenAPI
 }
 
 // WebsocketAPI websocket 接入地址

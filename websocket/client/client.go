@@ -20,6 +20,9 @@ import (
 // DefaultQueueSize 监听队列的缓冲长度
 const DefaultQueueSize = 10000
 
+// NeedPrintInfo 选择是否需要打印日志
+var NeedPrintInfo bool
+
 // Setup 依赖注册
 func Setup() {
 	websocket.Register(&Client{})
@@ -109,7 +112,9 @@ func (c *Client) Listening() error {
 			}
 			return err
 		case <-c.heartBeatTicker.C:
-			//log.Debugf("%s listened heartBeat", c.session)
+			if NeedPrintInfo {
+				log.Debugf("%s listened heartBeat", c.session)
+			}
 			heartBeatEvent := &dto.WSPayload{
 				WSPayloadBase: dto.WSPayloadBase{
 					OPCode: dto.WSHeartbeat,
@@ -125,7 +130,9 @@ func (c *Client) Listening() error {
 // Write 往 ws 写入数据
 func (c *Client) Write(message *dto.WSPayload) error {
 	m, _ := json.Marshal(message)
-	//log.Infof("%s write %s message, %v", c.session, dto.OPMeans(message.OPCode), string(m))
+	if NeedPrintInfo {
+		log.Infof("%s write %s message, %v", c.session, dto.OPMeans(message.OPCode), string(m))
+	}
 
 	if err := c.conn.WriteMessage(wss.TextMessage, m); err != nil {
 		log.Errorf("%s WriteMessage failed, %v", c.session, err)
@@ -211,7 +218,9 @@ func (c *Client) readMessageToQueue() {
 		}
 		payload.RawMessage = message
 		payload.Session = c.session
-		//log.Infof("%s receive %s message, %s", c.session, dto.OPMeans(payload.OPCode), string(message))
+		if NeedPrintInfo {
+			log.Infof("%s receive %s message, %s", c.session, dto.OPMeans(payload.OPCode), string(message))
+		}
 		// 处理内置的一些事件，如果处理成功，则这个事件不再投递给业务
 		if c.isHandleBuildIn(payload) {
 			continue
