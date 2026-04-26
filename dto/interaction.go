@@ -28,6 +28,12 @@ const (
 	InteractionTypePing InteractionType = 1
 	// InteractionTypeCommand 命令
 	InteractionTypeCommand InteractionType = 2
+	// InteractionTypeMsgButton 消息按钮
+	InteractionTypeMsgButton InteractionType = 11
+	// InteractionTypeC2CQuickMenu 单聊快捷菜单
+	InteractionTypeC2CQuickMenu InteractionType = 12
+	// InteractionTypeClawConfig Claw配置查询/更新事件
+	InteractionTypeClawConfig InteractionType = 20
 )
 
 // InteractionData 互动数据
@@ -44,11 +50,43 @@ const (
 	// InteractionDataTypeChatSearch 聊天框搜索
 	InteractionDataTypeChatSearch InteractionDataType = 9
 	// InteractionDataTypeInlineKeyboardClick 消息按钮点击
-	InteractionDataTypeInlineKeyboardClick = 11
+	InteractionDataTypeInlineKeyboardClick InteractionDataType = 11
 	// InteractionDataTypeCallbackCommandClick C2C菜单点击
-	InteractionDataTypeCallbackCommandClick = 12
+	InteractionDataTypeCallbackCommandClick InteractionDataType = 12
 	// InteractionDataTypeMessageFeedbackClick 智能体消息反馈
-	InteractionDataTypeMessageFeedbackClick = 13
+	InteractionDataTypeMessageFeedbackClick InteractionDataType = 13
 	// InteractionDataTypeClearSessionClick 清空会话按钮点击
-	InteractionDataTypeClearSessionClick = 14
+	InteractionDataTypeClearSessionClick InteractionDataType = 14
+	// InteractionDataTypeConfigQuery Claw 配置查询
+	InteractionDataTypeConfigQuery InteractionDataType = 2001
+	// InteractionDataTypeConfigUpdate Claw 配置更新
+	InteractionDataTypeConfigUpdate InteractionDataType = 2002
 )
+
+// ResponseInteraction 回应互动消息接口的请求体
+type ResponseInteraction struct {
+	// Code 响应值：0 成功 1 操作失败 2 操作频繁 3 重复操作 4 没有权限 5 仅管理员操作
+	Code uint32              `json:"code"`
+	Data InteractionRespData `json:"data"`
+}
+
+type InteractionRespData struct {
+	ClawCfg ClawConfig `json:"claw_cfg"`
+}
+
+type ClawConfig struct {
+	// ChannelType 默认设置为"qqbot"
+	ChannelType string `json:"channel_type"`
+	ChannelVer  string `json:"channel_ver"`
+	// ClawType 默认设置为"openclaw"
+	ClawType string `json:"claw_type"`
+	ClawVer  string `json:"claw_ver"`
+	// RequireMention 群消息模式 "mention"=@机器人时激活 "always"=总是激活
+	RequireMention string `json:"require_mention"`
+	// GroupPolicy 群消息策略 open=全响应 | allowlist=白名单 | disabled=不响应
+	GroupPolicy string `json:"group_policy"`
+	// MentionPatterns @文本的名称提及BOT名，多个使用,分隔
+	MentionPatterns string `json:"mention_patterns"`
+	// OnlineState 在线状态 默认"online"
+	OnlineState string `json:"online_state"`
+}
