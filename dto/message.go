@@ -30,7 +30,7 @@ type Message struct {
 	Embeds []*Embed `json:"embeds"`
 	// 消息中的提醒信息(@)列表
 	Mentions []*User `json:"mentions"`
-	// ark 消息
+	// ark 消息(频道场景)
 	Ark *Ark `json:"ark"`
 	// 私信消息
 	DirectMessage bool `json:"direct_message"`
@@ -49,6 +49,16 @@ type Message struct {
 	// 消息类型
 	MessageType int          `json:"message_type"`
 	MsgElements []MsgElement `json:"msg_elements"`
+	// ArkData Ark消息(C2C/群聊场景)
+	ArkData ArkData `json:"ark_data,omitempty"`
+}
+
+// ArkData C2C/群聊 Ark消息结构
+type ArkData struct {
+	ArkName string            `json:"ark_name"`
+	ArkType string            `json:"ark_type"`
+	Fields  map[string]string `json:"fields,omitempty"`
+	Prompt  string            `json:"prompt"`
 }
 
 type MsgElement struct {
@@ -79,12 +89,14 @@ type EmbedField struct {
 
 // MessageAttachment 附件定义
 type MessageAttachment struct {
-	URL         string `json:"url,omitempty"`
-	FileName    string `json:"filename,omitempty"`
-	Height      int    `json:"height,omitempty"`
-	Size        int    `json:"size,omitempty"`
-	Width       int    `json:"width,omitempty"`
-	ContentType string `json:"content_type,omitempty"` // voice:语音, image/xxx: 图片 video/xxx: 视频
+	URL          string `json:"url,omitempty"`
+	FileName     string `json:"filename,omitempty"`
+	Height       int    `json:"height,omitempty"`
+	Size         int    `json:"size,omitempty"`
+	Width        int    `json:"width,omitempty"`
+	ContentType  string `json:"content_type,omitempty"`   // voice:语音, image/xxx: 图片 video/xxx: 视频
+	AsrReferText string `json:"asr_refer_text,omitempty"` // 语音文件语音转文字文本
+	VoiceWavUrl  string `json:"voice_wav_url,omitempty"`  // wav 格式语音文件 url
 }
 
 // MessageReactionUsers 消息表情表态用户列表
