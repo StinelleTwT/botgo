@@ -51,6 +51,10 @@ type Message struct {
 	MsgElements []MsgElement `json:"msg_elements"`
 	// ArkData Ark消息(C2C/群聊场景)
 	ArkData ArkData `json:"ark_data,omitempty"`
+	// 消息审核ID(仅发送主动消息时产生)
+	AuditId string `json:"audit_id"`
+	// 消息审核Tips(仅发送主动消息时产生)
+	AuditTips string `json:"audit_tips"`
 }
 
 // ArkData C2C/群聊 Ark消息结构
