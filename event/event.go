@@ -198,7 +198,7 @@ func groupMessageHandler(payload *dto.WSPayload, message []byte) error {
 	if err := ParseData(message, data); err != nil {
 		return err
 	}
-	if DefaultHandlers.GroupATMessage != nil {
+	if DefaultHandlers.GroupMessage != nil {
 		return DefaultHandlers.GroupMessage(payload, data)
 	}
 	return nil
