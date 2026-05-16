@@ -16,4 +16,6 @@ type MessageAudit struct {
 	CreateTime string `json:"create_time"`
 	// 子频道 seq，用于消息间的排序，seq 在同一子频道中按从先到后的顺序递增，不同的子频道之前消息无法排序
 	SeqInChannel string `json:"seq_in_channel"`
+	// 群 OpenID
+	GroupOpenid string `json:"group_openid"`
 }
