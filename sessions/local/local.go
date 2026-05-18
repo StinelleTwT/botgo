@@ -9,6 +9,7 @@ import (
 	"github.com/tencent-connect/botgo/log"
 	"github.com/tencent-connect/botgo/sessions/manager"
 	"github.com/tencent-connect/botgo/websocket"
+	"github.com/tencent-connect/botgo/websocket/client"
 	"golang.org/x/oauth2"
 )
 
@@ -88,7 +89,9 @@ func (l *ChanManager) newConnect(session dto.Session) {
 		return
 	}
 	if err = wsClient.Listening(); err != nil {
-		log.Errorf("[ws/session] Listening err %+v", err)
+		if client.NeedPrintInfo {
+			log.Errorf("[ws/session] Listening err %+v", err)
+		}
 		currentSession := wsClient.Session()
 		// 对于不能够进行重连的session，需要清空 session id 与 seq
 		if manager.CanNotResume(err) {

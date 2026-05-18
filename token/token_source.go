@@ -15,6 +15,7 @@ import (
 
 	"github.com/tencent-connect/botgo/constant"
 	"github.com/tencent-connect/botgo/log"
+	"github.com/tencent-connect/botgo/websocket/client"
 	"golang.org/x/oauth2"
 	"golang.org/x/sync/singleflight"
 )
@@ -120,17 +121,19 @@ func (w *QQBotTokenSource) getNewToken() (*oauth2.Token, error) {
 		return nil, err
 	}
 	payload := bytes.NewReader(data)
-	//log.Debugf("retrieve access token URL:%v req:%v", getTokenURL(), string(data))
+	if client.NeedPrintInfo {
+		log.Debugf("retrieve access token URL:%v req:%v", getTokenURL(), string(data))
+	}
 	req, err := http.NewRequest(http.MethodPost, getTokenURL(), payload)
 	if err != nil {
 		log.Errorf("init http req failed:%v", err)
 		return nil, err
 	}
 	req.Header.Add("Content-Type", "application/json")
-	client := &http.Client{
+	Client := &http.Client{
 		Timeout: 10 * time.Second,
 	}
-	rsp, err := client.Do(req)
+	rsp, err := Client.Do(req)
 	if err != nil {
 		log.Errorf("retrieve token failed:%v", err)
 		return nil, err
@@ -144,7 +147,9 @@ func (w *QQBotTokenSource) getNewToken() (*oauth2.Token, error) {
 		log.Errorf("read rsp failed:%v", err)
 		return nil, err
 	}
-	//log.Debugf("access token:%v traceID:%v", string(body), rspTraceID)
+	if client.NeedPrintInfo {
+		log.Debugf("access token:%v traceID:%v", string(body), rspTraceID)
+	}
 	retrieveRsp := &qqBotTokenRsp{}
 	if err = json.Unmarshal(body, retrieveRsp); err != nil {
 		log.Errorf("unmarshal rsp failed:%v traceID:%v", err, rspTraceID)
@@ -177,7 +182,9 @@ func StartRefreshAccessToken(ctx context.Context, tokenSource oauth2.TokenSource
 	if err != nil {
 		return err
 	}
-	//log.Debugf("token:%+v ", tk)
+	if client.NeedPrintInfo {
+		log.Debugf("token:%+v ", tk)
+	}
 	go func() {
 		var consecutiveFailures int
 		for {
@@ -193,12 +200,16 @@ func StartRefreshAccessToken(ctx context.Context, tokenSource oauth2.TokenSource
 				consecutiveFailures = 0
 				refreshMilliSec = getRefreshMilliSec(tk.ExpiresIn)
 			}
-			//log.Debugf("refresh after %d milli sec", refreshMilliSec)
+			if client.NeedPrintInfo {
+				log.Debugf("refresh after %d milli sec", refreshMilliSec)
+			}
 			timer := time.NewTimer(time.Duration(refreshMilliSec) * time.Millisecond)
 			select {
 			case <-timer.C:
 				{
-					log.Debugf("start to refresh access token %s", time.Now().Format(time.StampMilli))
+					if client.NeedPrintInfo {
+						log.Debugf("start to refresh access token %s", time.Now().Format(time.StampMilli))
+					}
 					tk, err = tokenSource.Token()
 					if err != nil {
 						log.Errorf("refresh access token failed:%s", err)
@@ -230,9 +241,9 @@ func getRefreshMilliSec(tokenTTLSec int64) int64 {
 	refreshMilliSec -= defaultExpiryDeltaMillSec
 	// 随机化，避免所有机器人都同时获取access_token
 	if refreshMilliSec > randTimeUpperLimitMilliSec {
-		rand := r.Int63n(randTimeUpperLimitMilliSec)
+		Rand := r.Int63n(randTimeUpperLimitMilliSec)
 		//log.Debugf("rand:%d", rand)
-		refreshMilliSec -= rand
+		refreshMilliSec -= Rand
 	}
 	return refreshMilliSec
 }

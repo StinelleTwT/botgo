@@ -92,7 +92,9 @@ func (c *Client) Listening() error {
 			return errs.ErrNeedReConnect
 		case err := <-c.closeChan:
 			// 关闭连接的错误码 https://bot.q.qq.com/wiki/develop/api/gateway/error/error.html
-			log.Errorf("%s Listening stop. err is %v", c.session, err)
+			if NeedPrintInfo {
+				log.Errorf("%s Listening stop. err is %v", c.session, err)
+			}
 			// 不能够 identify 的错误
 			if wss.IsCloseError(err, errs.WSCodeBackendBotOffline, errs.WSCodeBackendBotBanned) {
 				err = errs.New(errs.CodeConnCloseCantIdentify, err.Error())
@@ -202,7 +204,9 @@ func (c *Client) readMessageToQueue() {
 	for {
 		_, message, err := c.conn.ReadMessage()
 		if err != nil {
-			log.Errorf("%s read message failed, %v, message %s", c.session, err, string(message))
+			if NeedPrintInfo {
+				log.Errorf("%s read message failed, %v, message %s", c.session, err, string(message))
+			}
 			close(c.messageQueue)
 			// accessToken过期
 			if wss.IsCloseError(err, errs.WSCodeBackendAuthenticationFail) {
@@ -247,7 +251,9 @@ func (c *Client) listenMessageAndHandle() {
 		}
 		// 解析具体事件，并投递给业务注册的 handler
 		if err := event.ParseAndHandle(payload); err != nil {
-			log.Errorf("%s parseAndHandle failed, %v", c.session, err)
+			if NeedPrintInfo {
+				log.Errorf("%s parseAndHandle failed, %v", c.session, err)
+			}
 		}
 	}
 	log.Infof("%s message queue is closed", c.session)
