@@ -256,7 +256,9 @@ func (c *Client) listenMessageAndHandle() {
 			}
 		}
 	}
-	log.Infof("%s message queue is closed", c.session)
+	if NeedPrintInfo {
+		log.Infof("%s message queue is closed", c.session)
+	}
 }
 
 func (c *Client) saveSeq(seq uint32) {
