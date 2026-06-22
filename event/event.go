@@ -64,6 +64,8 @@ var eventParseFuncMap = map[dto.OPCode]map[dto.EventType]eventParseFunc{
 		dto.EventEnterAIO:             enterAIOHandler,
 		dto.EventGroupAddRobot:        groupAddRobotHandler,
 		dto.EventGroupDelRobot:        groupDelRobotHandler,
+		dto.EventGroupMemberAdd:       groupMemberAddHandler,
+		dto.EventGroupMemberRemove:    groupMemberRemoveHandler,
 	},
 }
 
@@ -387,6 +389,28 @@ func groupDelRobotHandler(payload *dto.WSPayload, message []byte) error {
 	}
 	if DefaultHandlers.GroupAddOrDelRobot != nil {
 		return DefaultHandlers.GroupAddOrDelRobot(payload, data)
+	}
+	return nil
+}
+
+func groupMemberAddHandler(payload *dto.WSPayload, message []byte) error {
+	data := &dto.WSGroupMemberAddOrRemove{}
+	if err := ParseData(message, data); err != nil {
+		return err
+	}
+	if DefaultHandlers.GroupAddOrDelRobot != nil {
+		return DefaultHandlers.GroupMemberAddOrDel(payload, data)
+	}
+	return nil
+}
+
+func groupMemberRemoveHandler(payload *dto.WSPayload, message []byte) error {
+	data := &dto.WSGroupMemberAddOrRemove{}
+	if err := ParseData(message, data); err != nil {
+		return err
+	}
+	if DefaultHandlers.GroupAddOrDelRobot != nil {
+		return DefaultHandlers.GroupMemberAddOrDel(payload, data)
 	}
 	return nil
 }

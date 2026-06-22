@@ -124,6 +124,9 @@ type WSC2CMessageData Message
 // WSGroupAddOrDelRobotData 群添加/删除机器人事件
 type WSGroupAddOrDelRobotData GroupAddOrDelRobot
 
+// WSGroupMemberAddOrRemove 群添加/移除成员事件
+type WSGroupMemberAddOrRemove GroupMemberAddOrRemove
+
 // ************************************************
 
 // WSC2CFriendData C2C 好友事件
