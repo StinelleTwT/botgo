@@ -38,9 +38,9 @@ var DefaultHandlers struct {
 	SubscribeMsgStatus SubscribeMsgStatusEventHandler
 	C2CFriend          C2CFriendEventHandler
 
-	EnterAIO            EnterAIOEventHandler
-	GroupAddOrDelRobot  GroupAddOrDelRobotEventHandler
-	GroupMemberAddOrDel GroupMemberAddOrRemoveEventHandler
+	EnterAIO               EnterAIOEventHandler
+	GroupAddOrDelRobot     GroupAddOrDelRobotEventHandler
+	GroupMemberAddOrRemove GroupMemberAddOrRemoveEventHandler
 }
 
 // ReadyHandler 可以处理 ws 的 ready 事件
@@ -165,6 +165,7 @@ func RegisterHandlers(handlers ...interface{}) dto.Intent {
 			DefaultHandlers.GroupAddOrDelRobot = handle
 			i = i | dto.EventToIntent(dto.EventGroupAddRobot, dto.EventGroupDelRobot)
 		case GroupMemberAddOrRemoveEventHandler:
+			DefaultHandlers.GroupMemberAddOrRemove = handle
 			i = i | dto.EventToIntent(dto.EventGroupMemberAdd, dto.EventGroupMemberRemove)
 		default:
 		}

@@ -398,8 +398,8 @@ func groupMemberAddHandler(payload *dto.WSPayload, message []byte) error {
 	if err := ParseData(message, data); err != nil {
 		return err
 	}
-	if DefaultHandlers.GroupAddOrDelRobot != nil {
-		return DefaultHandlers.GroupMemberAddOrDel(payload, data)
+	if DefaultHandlers.GroupMemberAddOrRemove != nil {
+		return DefaultHandlers.GroupMemberAddOrRemove(payload, data)
 	}
 	return nil
 }
@@ -409,8 +409,8 @@ func groupMemberRemoveHandler(payload *dto.WSPayload, message []byte) error {
 	if err := ParseData(message, data); err != nil {
 		return err
 	}
-	if DefaultHandlers.GroupAddOrDelRobot != nil {
-		return DefaultHandlers.GroupMemberAddOrDel(payload, data)
+	if DefaultHandlers.GroupMemberAddOrRemove != nil {
+		return DefaultHandlers.GroupMemberAddOrRemove(payload, data)
 	}
 	return nil
 }
