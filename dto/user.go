@@ -11,4 +11,5 @@ type User struct {
 	UnionUserAccount string `json:"union_user_account"` // 机器人关联的用户信息，与 union_openid 关联的应用是同一个
 	IsYou            bool   `json:"is_you"`             // 适用于群全量消息，用来标识是否为当前机器人
 	Scope            string `json:"scope"`              // 适用于群全量消息，标识 AT 的范围(@用户/机器人：single，@全体：all)
+	MemberRole       string `json:"member_role"`        // 消息发送者在群内的身份，枚举值：owner、admin、member
 }
